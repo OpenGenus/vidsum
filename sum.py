@@ -72,6 +72,16 @@ def find_summary_regions(srt_filename, duration=30, language="english"):
             total_time = time_regions(summary)
     return summary
 
+def create_summary(filename, regions):
+    subclips = []
+    input_video = VideoFileClip(filename)
+    last_end = 0
+    for (start, end) in regions:
+        subclip = input_video.subclip(start, end)
+        subclips.append(subclip)
+        last_end = end
+    return concatenate_videoclips(subclips)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Watch videos quickly")
     parser.add_argument('-i', '--video-file', help="Input video file", required=True)
