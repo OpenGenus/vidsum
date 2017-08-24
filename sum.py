@@ -82,12 +82,22 @@ def create_summary(filename, regions):
         last_end = end
     return concatenate_videoclips(subclips)
 
+def get_summary(filename="1.mp4", subtitles="1.srt"):
+    regions = find_summary_regions(subtitles,60,"english")
+    summary = create_summary(filename, regions)
+    base, ext = os.path.splitext(args.video_file)
+    output = "{0}_1.mp4".format(base)
+    summary.to_videofile( output, codec="libx264", temp_audiofile="temp.m4a", remove_temp=True, audio_codec="aac")
+    return True
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Watch videos quickly")
     parser.add_argument('-i', '--video-file', help="Input video file", required=True)
     parser.add_argument('-s', '--subtitles-file', help="Input subtitle file (srt)", required=True)
 
     args = parser.parse_args()
+
+    get_summary(args.video_file, args.subtitles_file)
 
     
 
