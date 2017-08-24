@@ -18,6 +18,18 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 from sumy.summarizers.lsa import LsaSummarizer
 
+def summarize(srt_file, n_sentences, language="english"):
+    parser = PlaintextParser.from_string(srt_to_doc(srt_file), Tokenizer(language))
+    stemmer = Stemmer(language)
+    summarizer = LsaSummarizer(stemmer)
+    summarizer.stop_words = get_stop_words(language)
+    segment = []
+    for sentence in summarizer(parser.document, n_sentences):
+        index = int(re.findall("\(([0-9]+)\)", str(sentence))[0])
+        item = srt_file[index]
+        segment.append(srt_item_to_range(item))
+    return segment
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Watch videos quickly")
     parser.add_argument('-i', '--video-file', help="Input video file", required=True)
