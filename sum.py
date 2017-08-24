@@ -18,6 +18,7 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 from sumy.summarizers.lsa import LsaSummarizer
 
+# generate segmented summary
 def summarize(srt_file, n_sentences, language="english"):
     parser = PlaintextParser.from_string(srt_to_txt(srt_file), Tokenizer(language))
     stemmer = Stemmer(language)
@@ -72,6 +73,7 @@ def find_summary_regions(srt_filename, duration=30, language="english"):
             total_time = time_regions(summary)
     return summary
 
+# join segments
 def create_summary(filename, regions):
     subclips = []
     input_video = VideoFileClip(filename)
@@ -82,6 +84,7 @@ def create_summary(filename, regions):
         last_end = end
     return concatenate_videoclips(subclips)
 
+# abstract function
 def get_summary(filename="1.mp4", subtitles="1.srt"):
     regions = find_summary_regions(subtitles,60,"english")
     summary = create_summary(filename, regions)
