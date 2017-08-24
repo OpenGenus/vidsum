@@ -19,7 +19,7 @@ from sumy.utils import get_stop_words
 from sumy.summarizers.lsa import LsaSummarizer
 
 def summarize(srt_file, n_sentences, language="english"):
-    parser = PlaintextParser.from_string(srt_to_doc(srt_file), Tokenizer(language))
+    parser = PlaintextParser.from_string(srt_to_txt(srt_file), Tokenizer(language))
     stemmer = Stemmer(language)
     summarizer = LsaSummarizer(stemmer)
     summarizer.stop_words = get_stop_words(language)
@@ -27,7 +27,7 @@ def summarize(srt_file, n_sentences, language="english"):
     for sentence in summarizer(parser.document, n_sentences):
         index = int(re.findall("\(([0-9]+)\)", str(sentence))[0])
         item = srt_file[index]
-        segment.append(srt_item_to_range(item))
+        segment.append(srt_segment_to_range(item))
     return segment
 
 # Extract text from subtitles file
