@@ -50,6 +50,28 @@ def srt_segment_to_range(item):
 def time_regions(regions):
     return sum(starmap(lambda start, end: end - start, regions))
 
+# find important sections
+def find_summary_regions(srt_filename, duration=30, language="english"):
+    srt_file = pysrt.open(srt_filename)
+    # generate average subtitle duration
+    subtitle_duration = time_regions(map(srt_segment_to_range, srt_file))/len(srt_file)
+    # compute number of sentences in the summary file
+    n_sentences = duration / subtitle_duration
+    summary = summarize(srt_file, n_sentences, language)
+    total_time = time_regions(summary)
+    too_short = total_time < duration
+    if too_short:
+        while total_time < duration:
+            n_sentences += 1
+            summary = summarize(srt_file, n_sentences, language)
+            total_time = time_regions(summary)
+    else:
+        while total_time > duration:
+            n_sentences -= 1
+            summary = summarize(srt_file, n_sentences, language)
+            total_time = time_regions(summary)
+    return summary
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Watch videos quickly")
     parser.add_argument('-i', '--video-file', help="Input video file", required=True)
