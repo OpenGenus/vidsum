@@ -30,6 +30,16 @@ def summarize(srt_file, n_sentences, language="english"):
         segment.append(srt_item_to_range(item))
     return segment
 
+# Extract text from subtitles file
+def srt_to_txt(srt_file):
+    text = ''
+    for index, item in enumerate(srt_file):
+        if item.text.startswith("["): continue
+        text += "(%d) " % index
+        text += item.text.replace("\n", "").strip("...").replace(".", "").replace("?", "").replace("!", "")
+        text += ". "
+    return text
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Watch videos quickly")
     parser.add_argument('-i', '--video-file', help="Input video file", required=True)
