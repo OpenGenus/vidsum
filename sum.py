@@ -40,6 +40,12 @@ def srt_to_txt(srt_file):
         text += ". "
     return text
 
+# Handling of srt segments to time range
+def srt_item_to_range(item):
+    start_segment = item.start.hours*60*60 + item.start.minutes*60 + item.start.seconds + item.start.milliseconds/1000.0
+    end_segment = item.end.hours*60*60 + item.end.minutes*60 + item.end.seconds + item.end.milliseconds/1000.0
+    return start_segment, end_segment
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Watch videos quickly")
     parser.add_argument('-i', '--video-file', help="Input video file", required=True)
