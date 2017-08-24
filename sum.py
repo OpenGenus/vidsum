@@ -106,12 +106,16 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser("Watch videos quickly")
     parser.add_argument('-i', '--video-file', help="Input video file", required=True)
     parser.add_argument('-s', '--subtitles-file', help="Input subtitle file (srt)", required=True)
+    parser.add_argument('-u', '--url', help="Video url")
 
     args = parser.parse_args()
 
-    #get_summary(args.video_file, args.subtitles_file)
+    url = args.url
+    if not url:
+        get_summary(args.video_file, args.subtitles_file)
+    else:
+        download_video(args.video_file)
+        # download subtitles
+        # proceed with general summarization
 
-    download_video(args.video_file)
-
-    
 
