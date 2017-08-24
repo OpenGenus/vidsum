@@ -12,6 +12,8 @@ imageio.plugins.ffmpeg.download()
 from moviepy.editor import *
 from itertools import starmap
 
+from pytube import YouTube
+
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.nlp.stemmers import Stemmer
@@ -88,9 +90,16 @@ def create_summary(filename, regions):
 def get_summary(filename="1.mp4", subtitles="1.srt"):
     regions = find_summary_regions(subtitles,60,"english")
     summary = create_summary(filename, regions)
-    base, ext = os.path.splitext(args.video_file)
+    base, ext = os.path.splitext(filename)
     output = "{0}_1.mp4".format(base)
     summary.to_videofile( output, codec="libx264", temp_audiofile="temp.m4a", remove_temp=True, audio_codec="aac")
+    return True
+
+def download_video(url):
+    yt = YouTube(url)
+    yt.set_filename('1')
+    video = yt.get('mp4')
+    video.download(os.getcwd())
     return True
 
 if __name__ == '__main__':
@@ -100,7 +109,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    get_summary(args.video_file, args.subtitles_file)
+    #get_summary(args.video_file, args.subtitles_file)
+
+    download_video(args.video_file)
 
     
 
