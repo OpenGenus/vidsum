@@ -27,4 +27,4 @@ For future development to this approach, see [Wiki](https://github.com/AdiChat/v
 
 # Contributions
 
-All contributions are welcomed. See all contributors [here]().
+All contributions are welcomed. See all contributors [here](https://github.com/AdiChat/vidsum/graphs/contributors).
