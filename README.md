@@ -23,7 +23,7 @@ python sum.py -u "url"
 
 # Future developments
 
-For future development to this approach, see [Wiki](https://github.com/AdiChat/vidsum/wiki/Future_developments) and check out other [approaches]().
+For future development to this approach, see [Wiki](https://github.com/AdiChat/vidsum/wiki/Future_developments) and check out other [approaches](https://github.com/AdiChat/vidsum/wiki/Other-approaches).
 
 # Contributions
 
