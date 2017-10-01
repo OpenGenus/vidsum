@@ -96,6 +96,7 @@ def get_summary(filename="1.mp4", subtitles="1.srt"):
     return True
 
 def download_video(url):
+    print url
     yt = YouTube(url)
     yt.set_filename('1')
     video = yt.get('mp4')
@@ -104,8 +105,8 @@ def download_video(url):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Watch videos quickly")
-    parser.add_argument('-i', '--video-file', help="Input video file", required=True)
-    parser.add_argument('-s', '--subtitles-file', help="Input subtitle file (srt)", required=True)
+    parser.add_argument('-i', '--video-file', help="Input video file")
+    parser.add_argument('-s', '--subtitles-file', help="Input subtitle file (srt)")
     parser.add_argument('-u', '--url', help="Video url")
 
     args = parser.parse_args()
@@ -114,7 +115,7 @@ if __name__ == '__main__':
     if not url:
         get_summary(args.video_file, args.subtitles_file)
     else:
-        download_video(args.video_file)
+        download_video(url)
         # download subtitles
         # proceed with general summarization
 
