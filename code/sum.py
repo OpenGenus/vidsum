@@ -96,6 +96,7 @@ def get_summary(filename="1.mp4", subtitles="1.srt"):
     return True
 
 def download_video(url):
+    print url
     yt = YouTube(url)
     yt.set_filename('1')
     video = yt.get('mp4')
@@ -114,7 +115,7 @@ if __name__ == '__main__':
     if not url:
         get_summary(args.video_file, args.subtitles_file)
     else:
-        download_video(args.video_file)
+        download_video(url)
         # download subtitles
         # proceed with general summarization
 
