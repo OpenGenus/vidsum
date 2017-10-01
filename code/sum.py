@@ -8,6 +8,7 @@ import sys
 import math
 import pysrt
 import imageio
+import youtube_dl
 imageio.plugins.ffmpeg.download()
 from moviepy.editor import *
 from itertools import starmap
@@ -108,20 +109,42 @@ def download_video(url):
     video.download(os.getcwd())
     return True
 
+def download_subs(subs):
+    ''' Downloads specified Youtube video's subtitles as a vtt/srt file.
+    args:
+        subs(str): Full url for youtube video
+    returns:
+        True
+    '''
+    ydl_opts = {
+            'outtmpl': '%(title)s.%(ext)s',
+            'subtitlesformat':'srt',
+            'writeautomaticsub':True,
+            'skip_download':True
+            }
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([subs])
+    return True
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Watch videos quickly")
     parser.add_argument('-i', '--video-file', help="Input video file")
     parser.add_argument('-s', '--subtitles-file', help="Input subtitle file (srt)")
     parser.add_argument('-u', '--url', help="Video url")
+    parser.add_argument('-p', '--subs', help="Video url for subtitle")
 
     args = parser.parse_args()
 
     url = args.url
-    if not url:
-        get_summary(args.video_file, args.subtitles_file)
-    else:
-        download_video(url)
+    subs = args.subs
+
+    if subs:
         # download subtitles
+        download_subs(subs)
+    elif url:
+        # dowload video
+        download_video(url)
+    else:
         # proceed with general summarization
-
-
+        get_summary(args.video_file, args.subtitles_file)
