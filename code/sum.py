@@ -105,7 +105,6 @@ def download_video(url):
     yt = YouTube(url)
     yt.set_filename('1')
     video = yt.filter('mp4')[-1]
-    # video = yt.get('mp4')
     video.download(os.getcwd())
     return True
 
