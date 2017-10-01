@@ -20,6 +20,10 @@ To download a YouTube video from url:
 ```python
 python sum.py -u "url"
 ```
+To download the subtitles of a YouTube video from url:
+```python
+python sum.py -p "url"
+```
 
 # Future developments
 
