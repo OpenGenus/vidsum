@@ -96,10 +96,11 @@ def get_summary(filename="1.mp4", subtitles="1.srt"):
     return True
 
 def download_video(url):
-    print url
+    print(url)
     yt = YouTube(url)
     yt.set_filename('1')
-    video = yt.get('mp4')
+    video = yt.filter('mp4')[-1]
+    print(video)
     video.download(os.getcwd())
     return True
 
