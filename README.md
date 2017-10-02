@@ -43,4 +43,4 @@ For future development to this approach, see [Wiki](https://github.com/AdiChat/v
 
 # Contributions
 
-All contributions are welcomed. See all contributors [here](https://github.com/AdiChat/vidsum/graphs/contributors).
+All contributions are welcomed. Please see [COMMIT_TEMPLATE.md](https://github.com/OpenGenus/vidsum/blob/master/COMMIT_TEMPLATE.md) before making pull requests to this repository. See all contributors [here](https://github.com/AdiChat/vidsum/graphs/contributors).
