@@ -22,7 +22,7 @@ Please note that vidsum requires the following packages to be installed:
 
 If you do not have these packages installed, then you can do so by running this command:
 ```sh
-$ pip install pysrt imageio moviepy pytube sumy
+$ pip install -r requirements.txt
 
 ```
 
