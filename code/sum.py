@@ -13,8 +13,6 @@ imageio.plugins.ffmpeg.download()
 from moviepy.editor import *
 from itertools import starmap
 
-from pytube import YouTube
-
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.nlp.stemmers import Stemmer
@@ -96,31 +94,18 @@ def get_summary(filename="1.mp4", subtitles="1.srt"):
     summary.to_videofile( output, codec="libx264", temp_audiofile="temp.m4a", remove_temp=True, audio_codec="aac")
     return True
 
-def download_video(url):
-    ''' Downloads specified Youtube video
-    args:
-        url(str): Full url for youtube video
-    returns:
-        True
-    '''
-    yt = YouTube(url)
-    yt.set_filename('1')
-    video = yt.filter('mp4')[-1]
-    video.download(os.getcwd())
-    return True
-
-def download_subs(subs):
+# download video with subtitles
+def downvdo_subs(subs):
     ''' Downloads specified Youtube video's subtitles as a vtt/srt file.
     args:
-        subs(str): Full url for youtube video
+        subs(str): Full url of Youtube video
     returns:
         True
     '''
     ydl_opts = {
-            'outtmpl': '%(title)s.%(ext)s',
+            'outtmpl': '1.%(ext)s',
             'subtitlesformat':'srt',
-            'writeautomaticsub':True,
-            'skip_download':True
+            'writeautomaticsub':True
             }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -132,19 +117,15 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--video-file', help="Input video file")
     parser.add_argument('-s', '--subtitles-file', help="Input subtitle file (srt)")
     parser.add_argument('-u', '--url', help="Video url")
-    parser.add_argument('-p', '--subs', help="Video url for subtitle")
 
     args = parser.parse_args()
 
     url = args.url
-    subs = args.subs
 
-    if subs:
-        # download subtitles
-        download_subs(subs)
-    elif url:
-        # dowload video
-        download_video(url)
-    else:
+    if not url:
         # proceed with general summarization
         get_summary(args.video_file, args.subtitles_file)
+
+    else:
+        # download video with subtitles
+        downvdo_subs(url)
