@@ -8,7 +8,7 @@ This is the community driven approach towards the summarization by the **[OpenGe
 
 In order to install vidsum, simply clone the repository to a local directory. You can do this by running the following commands:
 ```sh
-$ git clone https://github.com/AdiChat/vidsum.git
+$ git clone https://github.com/OpenGenus/vidsum.git
 
 $ cd vidsum/code
 
@@ -28,9 +28,9 @@ $ pip install pysrt imageio moviepy pytube sumy
 
 # Usage
 
-To generate summary of a video file `sample.mp4` with subtitle file `subtitle.srt` : 
+To generate summary of a video file `sample.mp4` with subtitle file `subtitle.srt` :
 ```python
-python sum.py -i sample.mp4 -s subtitle.srt 
+python sum.py -i sample.mp4 -s subtitle.srt
 ```
 To download a YouTube video along with its subtitles from url:
 ```python
