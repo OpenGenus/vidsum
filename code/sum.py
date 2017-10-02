@@ -20,8 +20,11 @@ from sumy.utils import get_stop_words
 from sumy.summarizers.lsa import LsaSummarizer
 
 # generate segmented summary
+
+
 def summarize(srt_file, n_sentences, language="english"):
-    parser = PlaintextParser.from_string(srt_to_txt(srt_file), Tokenizer(language))
+    parser = PlaintextParser.from_string(
+        srt_to_txt(srt_file), Tokenizer(language))
     stemmer = Stemmer(language)
     summarizer = LsaSummarizer(stemmer)
     summarizer.stop_words = get_stop_words(language)
@@ -33,30 +36,43 @@ def summarize(srt_file, n_sentences, language="english"):
     return segment
 
 # Extract text from subtitles file
+
+
 def srt_to_txt(srt_file):
     text = ''
     for index, item in enumerate(srt_file):
-        if item.text.startswith("["): continue
+        if item.text.startswith("["):
+            continue
         text += "(%d) " % index
-        text += item.text.replace("\n", "").strip("...").replace(".", "").replace("?", "").replace("!", "")
+        text += item.text.replace("\n", "").strip("...").replace(".",
+                                                                 "").replace("?", "").replace("!", "")
         text += ". "
     return text
 
 # Handling of srt segments to time range
+
+
 def srt_segment_to_range(item):
-    start_segment = item.start.hours*60*60 + item.start.minutes*60 + item.start.seconds + item.start.milliseconds/1000.0
-    end_segment = item.end.hours*60*60 + item.end.minutes*60 + item.end.seconds + item.end.milliseconds/1000.0
+    start_segment = item.start.hours * 60 * 60 + item.start.minutes * \
+        60 + item.start.seconds + item.start.milliseconds / 1000.0
+    end_segment = item.end.hours * 60 * 60 + item.end.minutes * \
+        60 + item.end.seconds + item.end.milliseconds / 1000.0
     return start_segment, end_segment
 
 # duration of segments
+
+
 def time_regions(regions):
     return sum(starmap(lambda start, end: end - start, regions))
 
 # find important sections
+
+
 def find_summary_regions(srt_filename, duration=30, language="english"):
     srt_file = pysrt.open(srt_filename)
     # generate average subtitle duration
-    subtitle_duration = time_regions(map(srt_segment_to_range, srt_file))/len(srt_file)
+    subtitle_duration = time_regions(
+        map(srt_segment_to_range, srt_file)) / len(srt_file)
     # compute number of sentences in the summary file
     n_sentences = duration / subtitle_duration
     summary = summarize(srt_file, n_sentences, language)
@@ -75,6 +91,8 @@ def find_summary_regions(srt_filename, duration=30, language="english"):
     return summary
 
 # join segments
+
+
 def create_summary(filename, regions):
     subclips = []
     input_video = VideoFileClip(filename)
@@ -86,15 +104,20 @@ def create_summary(filename, regions):
     return concatenate_videoclips(subclips)
 
 # abstract function
+
+
 def get_summary(filename="1.mp4", subtitles="1.srt"):
-    regions = find_summary_regions(subtitles,60,"english")
+    regions = find_summary_regions(subtitles, 60, "english")
     summary = create_summary(filename, regions)
     base, ext = os.path.splitext(filename)
     output = "{0}_1.mp4".format(base)
-    summary.to_videofile( output, codec="libx264", temp_audiofile="temp.m4a", remove_temp=True, audio_codec="aac")
+    summary.to_videofile(output, codec="libx264",
+                         temp_audiofile="temp.m4a", remove_temp=True, audio_codec="aac")
     return True
 
 # download video with subtitles
+
+
 def download_video_srt(subs):
     ''' Downloads specified Youtube video's subtitles as a vtt/srt file.
     args:
@@ -105,20 +128,22 @@ def download_video_srt(subs):
     # The video will be downloaded as 1.mp4 and its subtitles as 1.(lang).srt
     # Both, the video and its subtitles, will be downloaded to the same location as that of this script (sum.py)
     ydl_opts = {
-            'format':'best',
-            'outtmpl':'1.%(ext)s',
-            'subtitlesformat':'srt',
-            'writeautomaticsub':True,
-            }
+        'format': 'best',
+        'outtmpl': '1.%(ext)s',
+        'subtitlesformat': 'srt',
+        'writeautomaticsub': True,
+    }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([subs])
     return True
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Watch videos quickly")
     parser.add_argument('-i', '--video-file', help="Input video file")
-    parser.add_argument('-s', '--subtitles-file', help="Input subtitle file (srt)")
+    parser.add_argument('-s', '--subtitles-file',
+                        help="Input subtitle file (srt)")
     parser.add_argument('-u', '--url', help="Video url")
 
     args = parser.parse_args()
