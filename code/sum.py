@@ -95,17 +95,20 @@ def get_summary(filename="1.mp4", subtitles="1.srt"):
     return True
 
 # download video with subtitles
-def downvdo_subs(subs):
+def download_video_srt(subs):
     ''' Downloads specified Youtube video's subtitles as a vtt/srt file.
     args:
         subs(str): Full url of Youtube video
     returns:
         True
     '''
+    # The video will be downloaded as 1.mp4 and its subtitles as 1.(lang).srt
+    # Both, the video and its subtitles, will be downloaded to the same location as that of this script (sum.py)
     ydl_opts = {
-            'outtmpl': '1.%(ext)s',
+            'format':'best',
+            'outtmpl':'1.%(ext)s',
             'subtitlesformat':'srt',
-            'writeautomaticsub':True
+            'writeautomaticsub':True,
             }
 
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -128,4 +131,4 @@ if __name__ == '__main__':
 
     else:
         # download video with subtitles
-        downvdo_subs(url)
+        download_video_srt(url)
