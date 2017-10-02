@@ -16,13 +16,9 @@ To generate summary of a video file `sample.mp4` with subtitle file `subtitle.sr
 ```python
 python sum.py -i sample.mp4 -s subtitle.srt 
 ```
-To download a YouTube video from url:
+To download a YouTube video along with its subtitles from url:
 ```python
 python sum.py -u "url"
-```
-To download the subtitles of a YouTube video from url:
-```python
-python sum.py -p "url"
 ```
 
 # Future developments
