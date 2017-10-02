@@ -8,11 +8,10 @@ import sys
 import math
 import pysrt
 import imageio
+import youtube_dl
 imageio.plugins.ffmpeg.download()
 from moviepy.editor import *
 from itertools import starmap
-
-from pytube import YouTube
 
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
@@ -95,17 +94,25 @@ def get_summary(filename="1.mp4", subtitles="1.srt"):
     summary.to_videofile( output, codec="libx264", temp_audiofile="temp.m4a", remove_temp=True, audio_codec="aac")
     return True
 
-def download_video(url):
-    ''' Downloads specified Youtube video
+# download video with subtitles
+def download_video_srt(subs):
+    ''' Downloads specified Youtube video's subtitles as a vtt/srt file.
     args:
-        url(str): Full url for youtube video
+        subs(str): Full url of Youtube video
     returns:
         True
     '''
-    yt = YouTube(url)
-    yt.set_filename('1')
-    video = yt.filter('mp4')[-1]
-    video.download(os.getcwd())
+    # The video will be downloaded as 1.mp4 and its subtitles as 1.(lang).srt
+    # Both, the video and its subtitles, will be downloaded to the same location as that of this script (sum.py)
+    ydl_opts = {
+            'format':'best',
+            'outtmpl':'1.%(ext)s',
+            'subtitlesformat':'srt',
+            'writeautomaticsub':True,
+            }
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([subs])
     return True
 
 if __name__ == '__main__':
@@ -117,11 +124,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     url = args.url
+
     if not url:
-        get_summary(args.video_file, args.subtitles_file)
-    else:
-        download_video(url)
-        # download subtitles
         # proceed with general summarization
+        get_summary(args.video_file, args.subtitles_file)
 
-
+    else:
+        # download video with subtitles
+        download_video_srt(url)
