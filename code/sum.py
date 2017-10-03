@@ -9,7 +9,10 @@ import math
 import pysrt
 import imageio
 import youtube_dl
+import chardet
+import nltk
 imageio.plugins.ffmpeg.download()
+nltk.download('punkt')
 from moviepy.editor import *
 from itertools import starmap
 
@@ -69,7 +72,8 @@ def time_regions(regions):
 
 
 def find_summary_regions(srt_filename, duration=30, language="english"):
-    srt_file = pysrt.open(srt_filename)
+    enc = chardet.detect(open(srt_filename,"rb").read())['encoding']
+    srt_file = pysrt.open(srt_filename,encoding = enc)
     # generate average subtitle duration
     subtitle_duration = time_regions(
         map(srt_segment_to_range, srt_file)) / len(srt_file)
