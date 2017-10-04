@@ -3,16 +3,17 @@
 import argparse
 import os
 import re
-import subprocess
-import sys
-import math
+from itertools import starmap
+
 import pysrt
 import imageio
 import youtube_dl
+import chardet
+import nltk
 imageio.plugins.ffmpeg.download()
-from moviepy.editor import *
+nltk.download('punkt')
 from itertools import starmap
-
+from moviepy.editor import VideoFileClip, concatenate_videoclips
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.nlp.stemmers import Stemmer
@@ -20,6 +21,9 @@ from sumy.utils import get_stop_words
 from sumy.summarizers.lsa import LsaSummarizer
 
 
+imageio.plugins.ffmpeg.download()
+
+# generate segmented summary
 def summarize(srt_file, n_sentences, language="english"):
     """
     Generate segmented summary
@@ -44,6 +48,7 @@ def summarize(srt_file, n_sentences, language="english"):
     return segment
 
 
+# Extract text from subtitles file
 def srt_to_txt(srt_file):
     """
     Extract text from subtitles file
@@ -58,12 +63,13 @@ def srt_to_txt(srt_file):
         if item.text.startswith("["):
             continue
         text += "(%d) " % index
-        text += item.text.replace("\n", "").strip("...").replace(".",
-                                                                 "").replace("?", "").replace("!", "")
+        text += item.text.replace("\n", "").strip("...").replace(
+                                     ".", "").replace("?", "").replace("!", "")
         text += ". "
     return text
 
 
+# Handling of srt segments to time range
 def srt_segment_to_range(item):
     """
     Handling of srt segments to time range
@@ -76,6 +82,7 @@ def srt_segment_to_range(item):
     return start_segment, end_segment
 
 
+# duration of segments
 def time_regions(regions):
     """
     Duration of segments
@@ -83,8 +90,10 @@ def time_regions(regions):
     """
     return sum(starmap(lambda start, end: end - start, regions))
 
-
+  
+# find important sections
 def find_summary_regions(srt_filename, duration=30, language="english"):
+
     """
     Find important sections
 
@@ -96,6 +105,10 @@ def find_summary_regions(srt_filename, duration=30, language="english"):
 
     """
     srt_file = pysrt.open(srt_filename)
+
+    enc = chardet.detect(open(srt_filename,"rb").read())['encoding']
+    srt_file = pysrt.open(srt_filename,encoding = enc)
+
     # generate average subtitle duration
     subtitle_duration = time_regions(
         map(srt_segment_to_range, srt_file)) / len(srt_file)
@@ -117,6 +130,7 @@ def find_summary_regions(srt_filename, duration=30, language="english"):
     return summary
 
 
+# join segments
 def create_summary(filename, regions):
     """
     Join segments
@@ -132,6 +146,7 @@ def create_summary(filename, regions):
     return concatenate_videoclips(subclips)
 
 
+# abstract function
 def get_summary(filename="1.mp4", subtitles="1.srt"):
     """
     Abstract function
@@ -146,11 +161,14 @@ def get_summary(filename="1.mp4", subtitles="1.srt"):
     summary = create_summary(filename, regions)
     base, ext = os.path.splitext(filename)
     output = "{0}_1.mp4".format(base)
-    summary.to_videofile(output, codec="libx264",
-                         temp_audiofile="temp.m4a", remove_temp=True, audio_codec="aac")
+    summary.to_videofile(
+                output,
+                codec="libx264",
+                temp_audiofile="temp.m4a", remove_temp=True, audio_codec="aac")
     return True
 
 
+# download video with subtitles
 def download_video_srt(subs):
     """
     Downloads specified Youtube video's subtitles as a vtt/srt file.
@@ -161,11 +179,17 @@ def download_video_srt(subs):
     
     returns:
         True
+
     
     The video will be downloaded as 1.mp4 and its subtitles as 1.(lang).srt
     Both, the video and its subtitles, will be downloaded to the same location as that of this script (sum.py)
 
     """
+    '''
+    # The video will be downloaded as 1.mp4 and its subtitles as 1.(lang).srt
+    # Both, the video and its subtitles, will be downloaded to the same
+    # location as that of this script (sum.py)
+
     ydl_opts = {
         'format': 'best',
         'outtmpl': '1.%(ext)s',
