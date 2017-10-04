@@ -153,10 +153,13 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--subtitles-file',
                         help="Input subtitle file (srt)")
     parser.add_argument('-u', '--url', help="Video url", type=str)
+    parser.add_argument('-k', '--keep-original-file', 
+                        help="Keep original movie & subtitle file", action="store_true", default=False)
 
     args = parser.parse_args()
 
     url = args.url
+    keep_original_file = args.keep_original_file
 
     if not url:
         # proceed with general summarization
@@ -164,5 +167,9 @@ if __name__ == '__main__':
 
     else:
         # download video with subtitles
-        movie_filename, sutitle_filename = download_video_srt(url)
-        get_summary(filename=movie_filename, subtitles=sutitle_filename)
+        movie_filename, subtitle_filename = download_video_srt(url)
+        get_summary(filename=movie_filename, subtitles=subtitle_filename)
+        if not keep_original_file:
+            os.remove(movie_filename)
+            os.remove(subtitle_filename)
+            print("[sum.py] Remove the original files")
