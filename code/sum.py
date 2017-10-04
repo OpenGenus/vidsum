@@ -19,10 +19,18 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 from sumy.summarizers.lsa import LsaSummarizer
 
-# generate segmented summary
-
 
 def summarize(srt_file, n_sentences, language="english"):
+    """
+    Generate segmented summary
+
+    This function takes three arguments:
+
+    srt_file : The name of the SRT FILE 
+    n_sentences : No of sentences
+    language : Language of subtitles (default to English)
+
+    """
     parser = PlaintextParser.from_string(
         srt_to_txt(srt_file), Tokenizer(language))
     stemmer = Stemmer(language)
@@ -35,10 +43,16 @@ def summarize(srt_file, n_sentences, language="english"):
         segment.append(srt_segment_to_range(item))
     return segment
 
-# Extract text from subtitles file
-
 
 def srt_to_txt(srt_file):
+    """
+    Extract text from subtitles file
+
+    The function takes one argument:
+
+    srt_file : The name of the SRT FILE
+
+    """
     text = ''
     for index, item in enumerate(srt_file):
         if item.text.startswith("["):
@@ -49,26 +63,38 @@ def srt_to_txt(srt_file):
         text += ". "
     return text
 
-# Handling of srt segments to time range
-
 
 def srt_segment_to_range(item):
+    """
+    Handling of srt segments to time range
+
+    """
     start_segment = item.start.hours * 60 * 60 + item.start.minutes * \
         60 + item.start.seconds + item.start.milliseconds / 1000.0
     end_segment = item.end.hours * 60 * 60 + item.end.minutes * \
         60 + item.end.seconds + item.end.milliseconds / 1000.0
     return start_segment, end_segment
 
-# duration of segments
-
 
 def time_regions(regions):
-    return sum(starmap(lambda start, end: end - start, regions))
+    """
+    Duration of segments
 
-# find important sections
+    """
+    return sum(starmap(lambda start, end: end - start, regions))
 
 
 def find_summary_regions(srt_filename, duration=30, language="english"):
+    """
+    Find important sections
+
+    This function takes three arguments:
+
+    srt_filename : Name of the SRT FILE
+    duration : Time duration
+    language : Language of subtitles (default to English)
+
+    """
     srt_file = pysrt.open(srt_filename)
     # generate average subtitle duration
     subtitle_duration = time_regions(
@@ -90,10 +116,12 @@ def find_summary_regions(srt_filename, duration=30, language="english"):
             total_time = time_regions(summary)
     return summary
 
-# join segments
-
 
 def create_summary(filename, regions):
+    """
+    Join segments
+
+    """
     subclips = []
     input_video = VideoFileClip(filename)
     last_end = 0
@@ -103,10 +131,17 @@ def create_summary(filename, regions):
         last_end = end
     return concatenate_videoclips(subclips)
 
-# abstract function
-
 
 def get_summary(filename="1.mp4", subtitles="1.srt"):
+    """
+    Abstract function
+
+    The function takes two arguments:
+
+    filename : Name of the Video file (defaults to "1.mp4")
+    subtitles : Name of the subtitle file (defaults to "1.srt")
+
+    """
     regions = find_summary_regions(subtitles, 60, "english")
     summary = create_summary(filename, regions)
     base, ext = os.path.splitext(filename)
@@ -115,18 +150,22 @@ def get_summary(filename="1.mp4", subtitles="1.srt"):
                          temp_audiofile="temp.m4a", remove_temp=True, audio_codec="aac")
     return True
 
-# download video with subtitles
-
 
 def download_video_srt(subs):
-    ''' Downloads specified Youtube video's subtitles as a vtt/srt file.
-    args:
-        subs(str): Full url of Youtube video
+    """
+    Downloads specified Youtube video's subtitles as a vtt/srt file.
+
+    The function takes one argument:
+    
+    subs(str): Full url of Youtube video
+    
     returns:
         True
-    '''
-    # The video will be downloaded as 1.mp4 and its subtitles as 1.(lang).srt
-    # Both, the video and its subtitles, will be downloaded to the same location as that of this script (sum.py)
+    
+    The video will be downloaded as 1.mp4 and its subtitles as 1.(lang).srt
+    Both, the video and its subtitles, will be downloaded to the same location as that of this script (sum.py)
+
+    """
     ydl_opts = {
         'format': 'best',
         'outtmpl': '1.%(ext)s',
