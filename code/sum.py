@@ -34,7 +34,7 @@ def summarize(srt_file, n_sentences, language="english"):
     n_sentences : No of sentences
     language : Language of subtitles (default to English)
     
-    returns: segment of subtitles
+    returns: type(list) segment of subtitles
     
     """
     parser = PlaintextParser.from_string(
@@ -59,7 +59,7 @@ def srt_to_txt(srt_file):
 
     srt_file : The name of the SRT FILE
     
-    returns: extracted text from subtitles file
+    returns: type(string) extracted text from subtitles file
     
     """
     text = ''
@@ -77,7 +77,7 @@ def srt_to_txt(srt_file):
 def srt_segment_to_range(item):
     """
     Handling of srt segments to time range
-    returns: starting segment and ending segment of srt
+    returns: type(int) starting segment and type(int) ending segment of srt
     
     """
     start_segment = item.start.hours * 60 * 60 + item.start.minutes * \
@@ -111,7 +111,7 @@ def find_summary_regions(srt_filename, duration=30, language="english"):
     language : Language of subtitles (default to English)
    
     
-    returns: summary
+    returns: type(list) segment of subtitles as "summary"
         
     """
     srt_file = pysrt.open(srt_filename)
