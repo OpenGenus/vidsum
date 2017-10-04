@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from __future__ import unicode_literals
 import argparse
 import os
 import re
@@ -131,11 +131,20 @@ def download_video_srt(subs):
         'outtmpl': '1.%(ext)s',
         'subtitlesformat': 'srt',
         'writeautomaticsub': True,
+        # 'allsubtitles': True # Get all subtitles
     }
 
+    movie_filename = ""
+    subtitle_filename = ""
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([subs])
-    return True
+        # ydl.download([subs])
+        result = ydl.extract_info("{}".format(url), download=True)
+        movie_filename = ydl.prepare_filename(result)
+        subtitle_info = result.get("requested_subtitles")
+        subtitle_language = subtitle_info.keys()[0]
+        subtitle_ext = subtitle_info.get(subtitle_language).get("ext")
+        subtitle_filename = movie_filename.replace(".mp4", ".%s.%s" % (subtitle_language, subtitle_ext))
+    return movie_filename, subtitle_filename
 
 
 if __name__ == '__main__':
@@ -143,7 +152,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--video-file', help="Input video file")
     parser.add_argument('-s', '--subtitles-file',
                         help="Input subtitle file (srt)")
-    parser.add_argument('-u', '--url', help="Video url")
+    parser.add_argument('-u', '--url', help="Video url", type=str)
 
     args = parser.parse_args()
 
@@ -155,4 +164,5 @@ if __name__ == '__main__':
 
     else:
         # download video with subtitles
-        download_video_srt(url)
+        movie_filename, sutitle_filename = download_video_srt(url)
+        get_summary(filename=movie_filename, subtitles=sutitle_filename)
