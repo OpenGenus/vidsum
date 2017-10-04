@@ -33,7 +33,9 @@ def summarize(srt_file, n_sentences, language="english"):
     srt_file : The name of the SRT FILE 
     n_sentences : No of sentences
     language : Language of subtitles (default to English)
-
+    
+    returns: segment of subtitles
+    
     """
     parser = PlaintextParser.from_string(
         srt_to_txt(srt_file), Tokenizer(language))
@@ -56,7 +58,9 @@ def srt_to_txt(srt_file):
     The function takes one argument:
 
     srt_file : The name of the SRT FILE
-
+    
+    returns: extracted text from subtitles file
+    
     """
     text = ''
     for index, item in enumerate(srt_file):
@@ -73,7 +77,8 @@ def srt_to_txt(srt_file):
 def srt_segment_to_range(item):
     """
     Handling of srt segments to time range
-
+    returns: starting segment and ending segment of srt
+    
     """
     start_segment = item.start.hours * 60 * 60 + item.start.minutes * \
         60 + item.start.seconds + item.start.milliseconds / 1000.0
@@ -86,7 +91,9 @@ def srt_segment_to_range(item):
 def time_regions(regions):
     """
     Duration of segments
-
+    
+    returns: duration of segments
+    
     """
     return sum(starmap(lambda start, end: end - start, regions))
 
@@ -102,7 +109,10 @@ def find_summary_regions(srt_filename, duration=30, language="english"):
     srt_filename : Name of the SRT FILE
     duration : Time duration
     language : Language of subtitles (default to English)
-
+   
+    
+    returns: summary
+        
     """
     srt_file = pysrt.open(srt_filename)
 
@@ -134,7 +144,8 @@ def find_summary_regions(srt_filename, duration=30, language="english"):
 def create_summary(filename, regions):
     """
     Join segments
-
+    returns: joined subclips in segment
+    
     """
     subclips = []
     input_video = VideoFileClip(filename)
@@ -156,6 +167,10 @@ def get_summary(filename="1.mp4", subtitles="1.srt"):
     filename : Name of the Video file (defaults to "1.mp4")
     subtitles : Name of the subtitle file (defaults to "1.srt")
 
+    
+    returns:
+        True
+        
     """
     regions = find_summary_regions(subtitles, 60, "english")
     summary = create_summary(filename, regions)
@@ -185,7 +200,7 @@ def download_video_srt(subs):
     Both, the video and its subtitles, will be downloaded to the same location as that of this script (sum.py)
 
     """
-    '''
+    
     # The video will be downloaded as 1.mp4 and its subtitles as 1.(lang).srt
     # Both, the video and its subtitles, will be downloaded to the same
     # location as that of this script (sum.py)
