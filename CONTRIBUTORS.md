@@ -1,6 +1,6 @@
 # Contributors
 
-> Every work is great only because of its contributors
+> This work is made possible thanks to all of our great and wonderful contributers. To get involved, feel free to fork the repo, make changes and submit a pull request with [this template](https://github.com/OpenGenus/vidsum/blob/master/COMMIT_TEMPLATE.md). 
 
 ## Contributors
 
