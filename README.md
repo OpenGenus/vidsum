@@ -34,9 +34,13 @@ python sum.py -i sample.mp4 -s subtitle.srt
 ```
 To download a YouTube video along with its subtitles from url:
 ```python
-python sum.py -u "url"
+python sum.py -u <url>
 ```
-
+To remain the downloaded video and subtitles:
+```python
+python sum.py -u <url> -k
+```
+ 
 # Future developments
 
 For future development to this approach, see [Wiki](https://github.com/AdiChat/vidsum/wiki/Future_developments) and check out other [approaches](https://github.com/AdiChat/vidsum/wiki/Other-approaches).
