@@ -4,6 +4,7 @@ import argparse
 import os
 import re
 from itertools import starmap
+import multiprocessing
 
 import pysrt
 import imageio
@@ -241,7 +242,9 @@ if __name__ == '__main__':
     else:
         # download video with subtitles
         movie_filename, subtitle_filename = download_video_srt(url)
-        get_summary(filename=movie_filename, subtitles=subtitle_filename)
+        summary_retrieval_process = multiprocessing.Process(target=get_summary, args=(movie_filename, subtitle_filename))
+        summary_retrieval_process.start()
+        summary_retrieval_process.join()
         if not keep_original_file:
             os.remove(movie_filename)
             os.remove(subtitle_filename)
