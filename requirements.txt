@@ -10,7 +10,7 @@ moviepy==0.2.3.2
 nltk==3.2.5
 numpy==1.13.3
 olefile==0.44
-Pillow==4.3.0
+Pillow==6.2.0
 pysrt==1.1.1
 pytube==6.4.2
 requests==2.18.4
